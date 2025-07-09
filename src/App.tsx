@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HospitalDataProvider } from "@/contexts/HospitalDataContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import SettingsPage from "./pages/Settings";
 import { Dashboard } from "./components/Dashboard";
 import { PatientManagement } from "./components/PatientManagement";
 import { BedManagement } from "./components/BedManagement";
@@ -53,6 +55,7 @@ const App = () => (
             <Route path="/analytics" element={<Layout><Analytics /></Layout>} />
             <Route path="/compliance" element={<Layout><Compliance /></Layout>} />
             <Route path="/notifications" element={<Layout><Notifications /></Layout>} />
+            <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

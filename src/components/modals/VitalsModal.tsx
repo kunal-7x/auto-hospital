@@ -1,104 +1,83 @@
+
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { useHospitalData, Patient } from "@/contexts/HospitalDataContext";
 import { useToast } from "@/hooks/use-toast";
+import { Patient } from "@/contexts/HospitalDataContext";
 
 interface VitalsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  patient: Patient;
+  patient: Patient | null;
 }
 
 export function VitalsModal({ isOpen, onClose, patient }: VitalsModalProps) {
-  const { updatePatientVitals } = useHospitalData();
   const { toast } = useToast();
-  
   const [vitals, setVitals] = useState({
-    heartRate: patient.vitals.heartRate || 0,
-    bloodPressure: patient.vitals.bloodPressure || '',
-    temperature: patient.vitals.temperature || 0,
-    oxygenSat: patient.vitals.oxygenSat || 0
+    temperature: patient?.vitals?.temperature || "98.6",
+    bloodPressure: patient?.vitals?.bloodPressure || "120/80",
+    heartRate: patient?.vitals?.heartRate || "72",
+    oxygenSat: patient?.vitals?.oxygenSat || "98"
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const newVitals = {
-      ...vitals,
-      timestamp: new Date().toISOString()
-    };
-
-    updatePatientVitals(patient.id, newVitals);
+  const handleSave = () => {
+    if (!patient) return;
     
     toast({
-      title: "Success",
-      description: "Vitals updated successfully"
+      title: "Vitals Updated",
+      description: `Updated vitals for ${patient.name}`
     });
-    
     onClose();
   };
 
+  if (!patient) return null;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Vitals - {patient.name}</DialogTitle>
         </DialogHeader>
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-4">
           <div>
-            <Label htmlFor="heartRate">Heart Rate (bpm)</Label>
+            <Label htmlFor="temperature">Temperature (°F)</Label>
             <Input
-              id="heartRate"
-              type="number"
-              value={vitals.heartRate}
-              onChange={(e) => setVitals(prev => ({ ...prev, heartRate: Number(e.target.value) }))}
+              id="temperature"
+              value={vitals.temperature}
+              onChange={(e) => setVitals({ ...vitals, temperature: e.target.value })}
             />
           </div>
-
           <div>
             <Label htmlFor="bloodPressure">Blood Pressure</Label>
             <Input
               id="bloodPressure"
-              placeholder="120/80"
               value={vitals.bloodPressure}
-              onChange={(e) => setVitals(prev => ({ ...prev, bloodPressure: e.target.value }))}
+              onChange={(e) => setVitals({ ...vitals, bloodPressure: e.target.value })}
             />
           </div>
-
           <div>
-            <Label htmlFor="temperature">Temperature (°C)</Label>
+            <Label htmlFor="heartRate">Heart Rate (BPM)</Label>
             <Input
-              id="temperature"
-              type="number"
-              step="0.1"
-              value={vitals.temperature}
-              onChange={(e) => setVitals(prev => ({ ...prev, temperature: Number(e.target.value) }))}
+              id="heartRate"
+              value={vitals.heartRate}
+              onChange={(e) => setVitals({ ...vitals, heartRate: e.target.value })}
             />
           </div>
-
           <div>
             <Label htmlFor="oxygenSat">Oxygen Saturation (%)</Label>
             <Input
               id="oxygenSat"
-              type="number"
               value={vitals.oxygenSat}
-              onChange={(e) => setVitals(prev => ({ ...prev, oxygenSat: Number(e.target.value) }))}
+              onChange={(e) => setVitals({ ...vitals, oxygenSat: e.target.value })}
             />
           </div>
-
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit">
-              Update Vitals
-            </Button>
-          </DialogFooter>
-        </form>
+          <div className="flex gap-2">
+            <Button onClick={handleSave} className="flex-1">Save Changes</Button>
+            <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
