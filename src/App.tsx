@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HospitalDataProvider } from "@/contexts/HospitalDataContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SettingsPage from "./pages/Settings";
@@ -37,10 +38,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HospitalDataProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+      <ThemeProvider defaultTheme="system" storageKey="hospital-ui-theme">
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
           <Routes>
             <Route path="/" element={<Layout><Dashboard /></Layout>} />
             <Route path="/patients" element={<Layout><PatientManagement /></Layout>} />
@@ -58,8 +60,9 @@ const App = () => (
             <Route path="/settings" element={<Layout><SettingsPage /></Layout>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
     </HospitalDataProvider>
   </QueryClientProvider>
 );

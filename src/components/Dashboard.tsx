@@ -55,13 +55,18 @@ export function Dashboard() {
     }
   ];
 
-  const bedStatus = [
-    { ward: "ICU", total: 20, occupied: 18, available: 2, maintenance: 0 },
-    { ward: "General Ward A", total: 40, occupied: 35, available: 4, maintenance: 1 },
-    { ward: "General Ward B", total: 40, occupied: 32, available: 7, maintenance: 1 },
-    { ward: "Emergency", total: 15, occupied: 12, available: 3, maintenance: 0 },
-    { ward: "Pediatrics", total: 25, occupied: 20, available: 4, maintenance: 1 }
-  ];
+  // Calculate dynamic bed status from actual data
+  const wardNames = ["ICU", "General Ward A", "General Ward B", "Emergency", "Pediatrics"];
+  const bedStatus = wardNames.map(ward => {
+    const wardBeds = beds.filter(bed => bed.ward === ward);
+    const total = wardBeds.length;
+    const occupied = wardBeds.filter(bed => bed.status === 'occupied').length;
+    const available = wardBeds.filter(bed => bed.status === 'available').length;
+    const maintenance = wardBeds.filter(bed => bed.status === 'maintenance').length;
+    const cleaning = wardBeds.filter(bed => bed.status === 'cleaning').length;
+    
+    return { ward, total, occupied, available, maintenance, cleaning };
+  }).filter(ward => ward.total > 0); // Only show wards with beds
 
   const recentActivities = [
     { id: 1, action: "Patient admitted", patient: "John Doe", time: "10 min ago", type: "admission" },
@@ -168,7 +173,11 @@ export function Dashboard() {
                 </div>
               </div>
             ))}
-            <Button variant="medical" className="w-full mt-4">
+            <Button 
+              variant="medical" 
+              className="w-full mt-4"
+              onClick={() => window.location.href = '/beds'}
+            >
               <Bed className="w-4 h-4 mr-2" />
               View Detailed Bed Management
             </Button>

@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/contexts/ThemeContext";
 import { 
   Settings as SettingsIcon, 
   User, 
@@ -18,11 +19,15 @@ import {
   Database,
   Users,
   Activity,
-  Save
+  Save,
+  Moon,
+  Sun,
+  Monitor
 } from "lucide-react";
 
 export function Settings() {
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState("profile");
 
   const handleSave = (section: string) => {
@@ -225,14 +230,29 @@ export function Settings() {
             <CardContent className="space-y-4">
               <div>
                 <Label>Theme</Label>
-                <Select defaultValue="system">
+                <Select value={theme} onValueChange={setTheme}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
+                    <SelectItem value="light">
+                      <div className="flex items-center gap-2">
+                        <Sun className="w-4 h-4" />
+                        Light
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="dark">
+                      <div className="flex items-center gap-2">
+                        <Moon className="w-4 h-4" />
+                        Dark
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="system">
+                      <div className="flex items-center gap-2">
+                        <Monitor className="w-4 h-4" />
+                        System
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>

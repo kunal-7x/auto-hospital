@@ -9,6 +9,8 @@ import { PatientChartModal } from "@/components/modals/PatientChartModal";
 import { CareUpdateModal } from "@/components/modals/CareUpdateModal";
 import { VitalsModal } from "@/components/modals/VitalsModal";
 import { TaskManagementModal } from "@/components/modals/TaskManagementModal";
+import { EmergencyAlertModal } from "@/components/modals/EmergencyAlertModal";
+import { HandoverReportModal } from "@/components/modals/HandoverReportModal";
 import { useToast } from "@/hooks/use-toast";
 
 export function NursingStation() {
@@ -20,6 +22,8 @@ export function NursingStation() {
   const [careModalOpen, setCareModalOpen] = useState(false);
   const [vitalsModalOpen, setVitalsModalOpen] = useState(false);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
+  const [emergencyModalOpen, setEmergencyModalOpen] = useState(false);
+  const [handoverModalOpen, setHandoverModalOpen] = useState(false);
 
   const activePatients = patients.filter(p => p.status === 'active');
   
@@ -51,10 +55,11 @@ export function NursingStation() {
   };
 
   const handleShiftHandover = () => {
-    toast({
-      title: "Handover Report Generated",
-      description: "Shift handover report has been prepared for the next shift"
-    });
+    setHandoverModalOpen(true);
+  };
+
+  const handleEmergencyAlert = () => {
+    setEmergencyModalOpen(true);
   };
 
   const getPriorityColor = (condition: string) => {
@@ -76,7 +81,11 @@ export function NursingStation() {
           <p className="text-muted-foreground">Patient care management and shift coordination</p>
         </div>
         <div className="flex gap-2">
-          <Button className="gap-2" variant="medical">
+          <Button 
+            className="gap-2" 
+            variant="medical"
+            onClick={handleEmergencyAlert}
+          >
             <Heart className="w-4 h-4" />
             Emergency Alert
           </Button>
@@ -325,7 +334,7 @@ export function NursingStation() {
                     <p>• Room A-101: Midnight vitals check</p>
                   </div>
                 </div>
-                <Button className="w-full">Generate Handover Report</Button>
+                <Button className="w-full" onClick={handleShiftHandover}>Generate Handover Report</Button>
               </div>
             </CardContent>
           </Card>
@@ -354,6 +363,16 @@ export function NursingStation() {
       <TaskManagementModal
         isOpen={taskModalOpen}
         onClose={() => setTaskModalOpen(false)}
+      />
+
+      <EmergencyAlertModal
+        isOpen={emergencyModalOpen}
+        onClose={() => setEmergencyModalOpen(false)}
+      />
+
+      <HandoverReportModal
+        isOpen={handoverModalOpen}
+        onClose={() => setHandoverModalOpen(false)}
       />
     </div>
   );

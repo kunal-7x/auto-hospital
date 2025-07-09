@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { useHospitalData } from "@/contexts/HospitalDataContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -46,8 +48,25 @@ const mockDischarges = [
 ];
 
 export function Admissions() {
+  const { toast } = useToast();
+  const { patients, dischargePatient } = useHospitalData();
   const [admissions, setAdmissions] = useState(mockAdmissions);
   const [discharges, setDischarges] = useState(mockDischarges);
+
+  const handleDischarge = (patientId: string) => {
+    dischargePatient(patientId);
+    toast({
+      title: "Patient Discharged",
+      description: "Patient has been successfully discharged"
+    });
+  };
+
+  const handleNewAdmission = () => {
+    toast({
+      title: "New Admission",
+      description: "Admission form opened"
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
